@@ -5,7 +5,7 @@ import sys
 
 os.environ.setdefault(
     'DJANGO_SETTINGS_MODULE',
-    'config.settings.prod'
+    'config.settings.local'
 )
 
 def main():
