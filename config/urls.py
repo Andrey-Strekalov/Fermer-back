@@ -19,8 +19,18 @@ from django.urls import path, include
 from django.http import HttpResponse
 
 
+from django.contrib.auth import get_user_model
+from django.http import HttpResponse
+
+def check_users(request):
+    User = get_user_model()
+    count = User.objects.count()
+    phones = list(User.objects.values_list('phone_number', flat=True))
+    return HttpResponse(f"Всего пользователей: {count}. Номера: {phones}")
+
 
 urlpatterns = [
+    path('check-users/', check_users),
     path('', lambda request: HttpResponse("OK"), name='health_check'),
     path('admin/', admin.site.urls),
     path('api/v1/auth/', include('apps.users.urls')),
