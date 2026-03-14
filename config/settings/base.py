@@ -43,8 +43,11 @@ MIDDLEWARE = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'u3433347_Fermer_DB',
+        'USER': 'u3433347_DB',
+        'PASSWORD': 'Kcx-3aZ-iVu-9Yv',
+        'HOST': 'localhost',
     }
 }
 
@@ -64,7 +67,7 @@ REST_FRAMEWORK = {
 
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = "static/"
 
 TEMPLATES = [
     {

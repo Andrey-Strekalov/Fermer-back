@@ -3,7 +3,10 @@ from .base import *
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    ".onrender.com"
+    'localhost',
+    '127.0.0.1',
+    'тонна-снг.рф',
+    'xn----7sbk1bacc2ad.xn--p1ai'
 ]
 
 # Render использует proxy
