@@ -11,11 +11,5 @@ ALLOWED_HOSTS = [
 
 SECRET_KEY = "fml**6z4!(zyw742=#sq2%7a=xa#=cd$9u&+t_e)ra5q)v#7xr"
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 CORS_ALLOW_ALL_ORIGINS = True
