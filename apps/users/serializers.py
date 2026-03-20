@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from .models import User
 
 class RequestCodeSerializer(serializers.Serializer):
     phone = serializers.CharField()
@@ -23,3 +24,7 @@ class ConfirmCodeSerializer(serializers.Serializer):
         attrs['code'] = attrs['code'].strip()
 
         return attrs
+
+class CurrentUserSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    phone = serializers.CharField(source='phone_number', read_only=True)

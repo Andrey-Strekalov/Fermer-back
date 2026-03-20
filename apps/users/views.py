@@ -1,30 +1,30 @@
-from django.shortcuts import render
-
 import random
 
-
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .models import PhoneOTP
 from .models import User
+from .models import PhoneOTP
+
 from .serializers import ConfirmCodeSerializer
 from .serializers import RequestCodeSerializer
+from .serializers import CurrentUserSerializer
+
 from .constants import OTP_CODE_LENGTH, OTP_TTL_SECONDS
 
 from datetime import timedelta
 from django.utils import timezone
 
+from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from rest_framework_simplejwt.tokens import RefreshToken
-
-
 
 
 class RequestCodeView(APIView):
     def post(self, request):
-
         serializer = RequestCodeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -48,8 +48,6 @@ class RequestCodeView(APIView):
             },
             status=status.HTTP_200_OK
         )
-
-
 
 
 class ConfirmCodeView(APIView):
@@ -93,6 +91,43 @@ class ConfirmCodeView(APIView):
                 "success": True,
                 "access_token": str(refresh.access_token),
                 "refresh_token": str(refresh)
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+class CurrentUserView(APIView):
+    authentication_classes = ()
+
+    @staticmethod
+    def unauthorized_response():
+        return Response(
+            {"success": False, "detail": "Unauthorized"},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+
+    def get(self, request):
+        jwt_auth = JWTAuthentication()
+        header = jwt_auth.get_header(request)
+
+        if header is None:
+            return self.unauthorized_response()
+
+        try:
+            raw_token = jwt_auth.get_raw_token(header)
+            if raw_token is None:
+                return self.unauthorized_response()
+
+            validated_token = jwt_auth.get_validated_token(raw_token)
+            user = jwt_auth.get_user(validated_token)
+        except Exception:
+            return self.unauthorized_response()
+
+        serializer = CurrentUserSerializer(user)
+        return Response(
+            {
+                "success": True,
+                "user": serializer.data,
             },
             status=status.HTTP_200_OK
         )
