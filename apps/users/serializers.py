@@ -28,3 +28,12 @@ class ConfirmCodeSerializer(serializers.Serializer):
 class CurrentUserSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     phone = serializers.CharField(source='phone_number', read_only=True)
+
+class RefreshTokenRequestSerializer(serializers.Serializer):
+    refresh_token = serializers.CharField()
+
+    def validate_refresh_token(self, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError('Invalid refresh token')
+        return value

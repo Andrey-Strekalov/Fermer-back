@@ -13,6 +13,7 @@ from .models import PhoneOTP
 from .serializers import ConfirmCodeSerializer
 from .serializers import RequestCodeSerializer
 from .serializers import CurrentUserSerializer
+from .serializers import RefreshTokenRequestSerializer
 
 from .constants import OTP_CODE_LENGTH, OTP_TTL_SECONDS
 
@@ -128,6 +129,44 @@ class CurrentUserView(APIView):
             {
                 "success": True,
                 "user": serializer.data,
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+class RefreshAccessTokenView(APIView):
+    authentication_classes = ()
+
+    @staticmethod
+    def invalid_refresh_response():
+        return Response(
+            {"success": False, "detail": "Invalid refresh token"},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+
+    def post(self, request):
+        serializer = RefreshTokenRequestSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return self.invalid_refresh_response()
+
+        refresh_token = serializer.validated_data['refresh_token']
+
+        try:
+            refresh = RefreshToken(refresh_token)
+            user_id = refresh.get('user_id')
+            if not user_id:
+                return self.invalid_refresh_response()
+
+            User.objects.get(pk=user_id)
+            access_token = str(refresh.access_token)
+        except Exception:
+            return self.invalid_refresh_response()
+
+        return Response(
+            {
+                "success": True,
+                "access_token": access_token,
             },
             status=status.HTTP_200_OK
         )
