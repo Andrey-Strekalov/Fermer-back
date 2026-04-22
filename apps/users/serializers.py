@@ -28,6 +28,7 @@ class ConfirmCodeSerializer(serializers.Serializer):
 class CurrentUserSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     phone = serializers.CharField(source='phone_number', read_only=True)
+    name = serializers.CharField(source='first_name', read_only=True)
 
 class RefreshTokenRequestSerializer(serializers.Serializer):
     refresh_token = serializers.CharField()
