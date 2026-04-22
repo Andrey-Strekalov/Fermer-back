@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 from .managers import UserManager
 
@@ -23,7 +25,19 @@ class User(AbstractUser):
     objects = UserManager()
 
     def __str__(self):
-        return self.phone_number
+        return self.first_name if self.first_name else self.phone_number
+
+
+@receiver(post_save, sender=User)
+def set_user_first_name(sender, instance, created, **kwargs):
+    """
+    После создания пользователя формируем first_name = user_<id>.
+    """
+    if created and not instance.first_name:  # только при создании и если first_name пусто
+        instance.first_name = f"user_{instance.id}"
+        # Сохраняем, избегая повторного вызова сигнала
+        instance.save(update_fields=['first_name'])
+
 
 
 class PhoneOTP(models.Model):

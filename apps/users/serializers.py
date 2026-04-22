@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from .models import User
 
 class RequestCodeSerializer(serializers.Serializer):
     phone = serializers.CharField()
@@ -23,3 +24,17 @@ class ConfirmCodeSerializer(serializers.Serializer):
         attrs['code'] = attrs['code'].strip()
 
         return attrs
+
+class CurrentUserSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    phone = serializers.CharField(source='phone_number', read_only=True)
+    name = serializers.CharField(source='first_name', read_only=True)
+
+class RefreshTokenRequestSerializer(serializers.Serializer):
+    refresh_token = serializers.CharField()
+
+    def validate_refresh_token(self, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError('Invalid refresh token')
+        return value
