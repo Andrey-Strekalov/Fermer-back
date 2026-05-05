@@ -55,13 +55,8 @@ class BidCreateSerializer(serializers.ModelSerializer):
         )
 
 
-class BidAuthorSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(source='first_name', read_only=True)
-
-
 class BidListItemSerializer(serializers.ModelSerializer):
-    author = BidAuthorSerializer(read_only=True)
+    author = CurrentUserSerializer(read_only=True)
 
     class Meta:
         model = Bid
