@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -22,7 +23,9 @@ class BidListCreateView(ListCreateAPIView):
         qs = super().get_queryset()
 
         bid_type = self.request.query_params.get('type')
-        if bid_type in (Bid.TYPE_BUY, Bid.TYPE_SELL):
+        if bid_type is not None:
+            if bid_type not in (Bid.TYPE_BUY, Bid.TYPE_SELL):
+                raise ValidationError({'type': 'Invalid type. Allowed: buy, sell'})
             qs = qs.filter(type=bid_type)
 
         region = self.request.query_params.get('region')
