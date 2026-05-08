@@ -4,7 +4,7 @@ from django.contrib.auth.models import BaseUserManager
 class UserManager(BaseUserManager):
     def create_user(self, phone_number, password=None, **extra_fields):
         if not phone_number:
-            raise ValueError('Phone number must be set')
+            raise ValueError('Номер телефона обязателен')
 
         user = self.model(phone_number=phone_number, **extra_fields)
         user.set_password(password)
@@ -17,8 +17,8 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_active', True)
 
         if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True')
+            raise ValueError('Суперпользователь должен иметь is_staff=True')
         if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True')
+            raise ValueError('Суперпользователь должен иметь is_superuser=True')
 
         return self.create_user(phone_number, password, **extra_fields)

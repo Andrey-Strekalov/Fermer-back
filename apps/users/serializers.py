@@ -8,10 +8,10 @@ class RequestCodeSerializer(serializers.Serializer):
         value = value.strip()
 
         if not value.startswith('+'):
-            raise serializers.ValidationError("Phone number must start with '+'")
+            raise serializers.ValidationError("Номер телефона должен начинаться с '+'")
 
         if len(value) < 10 or len(value) > 15:
-            raise serializers.ValidationError("Invalid phone number length")
+            raise serializers.ValidationError("Некорректная длина номера телефона")
 
         return value
 
@@ -36,5 +36,5 @@ class RefreshTokenRequestSerializer(serializers.Serializer):
     def validate_refresh_token(self, value: str) -> str:
         value = value.strip()
         if not value:
-            raise serializers.ValidationError('Invalid refresh token')
+            raise serializers.ValidationError('Неверный refresh token')
         return value
