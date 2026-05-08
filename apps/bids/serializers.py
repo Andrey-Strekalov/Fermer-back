@@ -69,6 +69,7 @@ class BidListItemSerializer(serializers.ModelSerializer):
             'volume',
             'region',
             'comment',
+            'is_archived',
             'published_at',
             'author',
         )
@@ -88,6 +89,7 @@ class BidSerializer(serializers.ModelSerializer):
             'volume',
             'region',
             'comment',
+            'is_archived',
             'published_at',
             'author',
         )
