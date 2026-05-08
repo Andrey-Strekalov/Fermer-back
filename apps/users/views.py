@@ -67,7 +67,7 @@ class ConfirmCodeView(APIView):
 
         if not otp:
             return Response(
-                {"success": False, "detail": "Invalid code"},
+                {"success": False, "detail": "Неверный код"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -75,7 +75,7 @@ class ConfirmCodeView(APIView):
 
         if timezone.now() > expires_in:
             return Response(
-                {"success": False, "detail": "Code expired"},
+                {"success": False, "detail": "Срок действия кода истек"},
                 status=status.HTTP_400_BAD_REQUEST
             )
         otp.is_used = True
@@ -103,7 +103,7 @@ class CurrentUserView(APIView):
     @staticmethod
     def unauthorized_response():
         return Response(
-            {"success": False, "detail": "Unauthorized"},
+            {"success": False, "detail": "Не авторизован"},
             status=status.HTTP_401_UNAUTHORIZED
         )
 
@@ -140,7 +140,7 @@ class RefreshAccessTokenView(APIView):
     @staticmethod
     def invalid_refresh_response():
         return Response(
-            {"success": False, "detail": "Invalid refresh token"},
+            {"success": False, "detail": "Неверный refresh token"},
             status=status.HTTP_401_UNAUTHORIZED
         )
 

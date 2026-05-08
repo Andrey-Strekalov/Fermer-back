@@ -21,7 +21,7 @@ class BidCreateSerializer(serializers.ModelSerializer):
     def validate_title(self, value: str) -> str:
         value = value.strip()
         if not value:
-            raise serializers.ValidationError('Title is required')
+            raise serializers.ValidationError('Название обязательно')
         return value
 
     def validate_quality(self, value: str) -> str:
@@ -30,7 +30,7 @@ class BidCreateSerializer(serializers.ModelSerializer):
     def validate_region(self, value: str) -> str:
         value = value.strip()
         if not value:
-            raise serializers.ValidationError('Region is required')
+            raise serializers.ValidationError('Регион обязателен')
         return value
 
     def validate_comment(self, value: str) -> str:
@@ -38,12 +38,12 @@ class BidCreateSerializer(serializers.ModelSerializer):
 
     def validate_price(self, value):
         if value <= 0:
-            raise serializers.ValidationError('Price must be greater than 0')
+            raise serializers.ValidationError('Цена должна быть больше 0')
         return value
 
     def validate_volume(self, value):
         if value <= 0:
-            raise serializers.ValidationError('Volume must be greater than 0')
+            raise serializers.ValidationError('Объем должен быть больше 0')
         return value
 
     def create(self, validated_data):
