@@ -102,6 +102,22 @@ class BidUpdateView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        allowed_fields = frozenset(BidUpdateSerializer.Meta.fields)
+        incoming_keys = frozenset(request.data.keys())
+        unknown_keys = incoming_keys - allowed_fields
+        if unknown_keys:
+            return Response(
+                {
+                    'success': False,
+                    'detail': (
+                        'В теле запроса есть поля, которые нельзя менять через '
+                        'редактирование заявки, или опечатки в именах полей'
+                    ),
+                    'unknown_fields': sorted(unknown_keys),
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         serializer = BidUpdateSerializer(
             bid,
             data=request.data,
