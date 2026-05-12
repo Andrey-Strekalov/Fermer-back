@@ -9,7 +9,12 @@ from django.db.models import Q
 
 from .models import Bid
 from .pagination import BidPagination
-from .serializers import BidCreateSerializer, BidListItemSerializer, BidSerializer
+from .serializers import (
+    BidCreateSerializer,
+    BidListItemSerializer,
+    BidSerializer,
+    BidUpdateSerializer,
+)
 
 
 class BidListCreateView(ListCreateAPIView):
@@ -67,6 +72,48 @@ class BidListCreateView(ListCreateAPIView):
                 'bid': BidSerializer(bid).data,
             },
             status=status.HTTP_201_CREATED,
+        )
+
+
+class BidUpdateView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def patch(self, request, pk: int):
+        try:
+            bid = Bid.objects.select_related('author').get(pk=pk)
+        except Bid.DoesNotExist:
+            return Response(
+                {'success': False, 'detail': 'Заявка не найдена'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if bid.author_id != request.user.id:
+            return Response(
+                {'success': False, 'detail': 'Недостаточно прав для редактирования заявки'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        if bid.is_archived:
+            return Response(
+                {
+                    'success': False,
+                    'detail': 'Нельзя редактировать архивную заявку',
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = BidUpdateSerializer(
+            bid,
+            data=request.data,
+            partial=True,
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        bid.refresh_from_db()
+        return Response(
+            {'success': True, 'bid': BidSerializer(bid).data},
+            status=status.HTTP_200_OK,
         )
 
 
