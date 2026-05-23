@@ -56,6 +56,14 @@ class BidListCreateView(ListCreateAPIView):
         if author_id and author_id.isdigit():
             qs = qs.filter(author_id=int(author_id))
 
+        title = self.request.query_params.get('title')
+        if title:
+            qs = qs.filter(title__iexact=title.strip())
+
+        quality = self.request.query_params.get('quality')
+        if quality:
+            qs = qs.filter(quality__icontains=quality.strip())
+
         return qs
 
     def create(self, request, *args, **kwargs):
