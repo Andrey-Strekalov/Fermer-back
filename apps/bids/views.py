@@ -106,6 +106,24 @@ class BidUpdateView(APIView):
             status=status.HTTP_200_OK,
         )
 
+    def delete(self, request, pk: int):
+        try:
+            bid = Bid.objects.get(pk=pk)
+        except Bid.DoesNotExist:
+            return Response(
+                {'success': False, 'detail': 'Заявка не найдена'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if bid.author_id != request.user.id:
+            return Response(
+                {'success': False, 'detail': 'Недостаточно прав для удаления заявки'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        bid.delete()
+        return Response({'success': True}, status=status.HTTP_200_OK)
+
     def patch(self, request, pk: int):
         try:
             bid = Bid.objects.select_related('author').get(pk=pk)
