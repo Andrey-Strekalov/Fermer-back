@@ -86,6 +86,26 @@ class BidListCreateView(ListCreateAPIView):
 class BidUpdateView(APIView):
     permission_classes = (IsAuthenticated,)
 
+    def get(self, request, pk: int):
+        try:
+            bid = Bid.objects.select_related('author').get(pk=pk)
+        except Bid.DoesNotExist:
+            return Response(
+                {'success': False, 'detail': 'Заявка не найдена'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if bid.is_archived and bid.author_id != request.user.id:
+            return Response(
+                {'success': False, 'detail': 'Недостаточно прав для просмотра заявки'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        return Response(
+            {'success': True, 'bid': BidSerializer(bid).data},
+            status=status.HTTP_200_OK,
+        )
+
     def patch(self, request, pk: int):
         try:
             bid = Bid.objects.select_related('author').get(pk=pk)
