@@ -18,6 +18,7 @@ class User(AbstractUser):
         choices=ROLE_CHOICES,
         default='farmer'
     )
+    company_logo = models.ImageField(upload_to='logos/', blank=True, null=True)
 
     USERNAME_FIELD = 'phone_number'
     REQUIRED_FIELDS = []

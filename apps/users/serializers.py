@@ -38,3 +38,36 @@ class RefreshTokenRequestSerializer(serializers.Serializer):
         if not value:
             raise serializers.ValidationError('Неверный refresh token')
         return value
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'phone_number', 'first_name', 'last_name', 'role', 'company_logo', 'date_joined')
+
+
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'role', 'company_logo')
+
+    def validate_first_name(self, value: str) -> str:
+        return value.strip()
+
+    def validate_last_name(self, value: str) -> str:
+        return value.strip()
+
+    def validate_role(self, value: str) -> str:
+        valid_roles = [choice[0] for choice in User.ROLE_CHOICES]
+        if value not in valid_roles:
+            raise serializers.ValidationError(
+                f'Некорректная роль. Допустимые значения: {", ".join(valid_roles)}'
+            )
+        return value
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if validated_data:
+            instance.save(update_fields=list(validated_data.keys()))
+        return instance

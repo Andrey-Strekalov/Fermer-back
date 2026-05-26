@@ -14,6 +14,8 @@ from .serializers import ConfirmCodeSerializer
 from .serializers import RequestCodeSerializer
 from .serializers import CurrentUserSerializer
 from .serializers import RefreshTokenRequestSerializer
+from .serializers import ProfileSerializer
+from .serializers import ProfileUpdateSerializer
 
 from .constants import OTP_CODE_LENGTH, OTP_TTL_SECONDS
 
@@ -132,6 +134,34 @@ class CurrentUserView(APIView):
             },
             status=status.HTTP_200_OK
         )
+
+
+class ProfileView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        serializer = ProfileSerializer(request.user, context={'request': request})
+        return Response({'success': True, 'profile': serializer.data})
+
+    def patch(self, request):
+        if 'phone_number' in request.data:
+            return Response(
+                {'success': False, 'detail': 'Изменение номера телефона недоступно через этот endpoint'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = ProfileUpdateSerializer(request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        request.user.refresh_from_db()
+        return Response(
+            {'success': True, 'profile': ProfileSerializer(request.user, context={'request': request}).data},
+        )
+
+    def delete(self, request):
+        request.user.delete()
+        return Response({'success': True})
 
 
 class RefreshAccessTokenView(APIView):
