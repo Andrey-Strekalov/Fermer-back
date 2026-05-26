@@ -14,6 +14,8 @@ from .serializers import ConfirmCodeSerializer
 from .serializers import RequestCodeSerializer
 from .serializers import CurrentUserSerializer
 from .serializers import RefreshTokenRequestSerializer
+from .serializers import ProfileSerializer
+from .serializers import ProfileUpdateSerializer
 
 from .constants import OTP_CODE_LENGTH, OTP_TTL_SECONDS
 
@@ -67,7 +69,7 @@ class ConfirmCodeView(APIView):
 
         if not otp:
             return Response(
-                {"success": False, "detail": "Invalid code"},
+                {"success": False, "detail": "Неверный код"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -75,7 +77,7 @@ class ConfirmCodeView(APIView):
 
         if timezone.now() > expires_in:
             return Response(
-                {"success": False, "detail": "Code expired"},
+                {"success": False, "detail": "Срок действия кода истек"},
                 status=status.HTTP_400_BAD_REQUEST
             )
         otp.is_used = True
@@ -103,7 +105,7 @@ class CurrentUserView(APIView):
     @staticmethod
     def unauthorized_response():
         return Response(
-            {"success": False, "detail": "Unauthorized"},
+            {"success": False, "detail": "Не авторизован"},
             status=status.HTTP_401_UNAUTHORIZED
         )
 
@@ -134,13 +136,41 @@ class CurrentUserView(APIView):
         )
 
 
+class ProfileView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        serializer = ProfileSerializer(request.user, context={'request': request})
+        return Response({'success': True, 'profile': serializer.data})
+
+    def patch(self, request):
+        if 'phone_number' in request.data:
+            return Response(
+                {'success': False, 'detail': 'Изменение номера телефона недоступно через этот endpoint'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = ProfileUpdateSerializer(request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        request.user.refresh_from_db()
+        return Response(
+            {'success': True, 'profile': ProfileSerializer(request.user, context={'request': request}).data},
+        )
+
+    def delete(self, request):
+        request.user.delete()
+        return Response({'success': True})
+
+
 class RefreshAccessTokenView(APIView):
     authentication_classes = ()
 
     @staticmethod
     def invalid_refresh_response():
         return Response(
-            {"success": False, "detail": "Invalid refresh token"},
+            {"success": False, "detail": "Неверный refresh token"},
             status=status.HTTP_401_UNAUTHORIZED
         )
 
