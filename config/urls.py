@@ -28,6 +28,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/auth/', include('apps.users.urls')),
     path('api/v1/bids/', include('apps.bids.urls')),
+    path('api/v1/contact-requests/', include('apps.contacts.urls')),
     path('api/v1/profile/', ProfileView.as_view()),
     path('api/v1/profile/requisites/', RequisitesView.as_view()),
 ]
