@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
 
-from apps.users.views import ProfileView
+from apps.users.views import ProfileView, RequisitesView
 
 
 urlpatterns = [
@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/v1/auth/', include('apps.users.urls')),
     path('api/v1/bids/', include('apps.bids.urls')),
     path('api/v1/profile/', ProfileView.as_view()),
+    path('api/v1/profile/requisites/', RequisitesView.as_view()),
 ]
 
 if settings.DEBUG:
