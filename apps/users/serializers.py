@@ -1,5 +1,7 @@
+from django.core.validators import validate_email as django_validate_email
+from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
-from .models import User
+from .models import User, Requisites
 
 class RequestCodeSerializer(serializers.Serializer):
     phone = serializers.CharField()
@@ -71,3 +73,67 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         if validated_data:
             instance.save(update_fields=list(validated_data.keys()))
         return instance
+
+
+class RequisitesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Requisites
+        fields = (
+            'company_name', 'legal_address', 'inn', 'ogrn',
+            'bik', 'bank_name', 'checking_account', 'correspondent_account',
+            'phone', 'fax', 'email',
+        )
+
+    def validate_inn(self, value: str) -> str:
+        if not value:
+            return value
+        if not value.isdigit():
+            raise serializers.ValidationError('ИНН должен содержать только цифры.')
+        if len(value) not in (10, 12):
+            raise serializers.ValidationError('ИНН должен содержать 10 цифр (юрлицо) или 12 цифр (ИП).')
+        return value
+
+    def validate_ogrn(self, value: str) -> str:
+        if not value:
+            return value
+        if not value.isdigit():
+            raise serializers.ValidationError('ОГРН должен содержать только цифры.')
+        if len(value) not in (13, 15):
+            raise serializers.ValidationError('ОГРН должен содержать 13 цифр (юрлицо) или 15 цифр (ИП).')
+        return value
+
+    def validate_bik(self, value: str) -> str:
+        if not value:
+            return value
+        if not value.isdigit():
+            raise serializers.ValidationError('БИК должен содержать только цифры.')
+        if len(value) != 9:
+            raise serializers.ValidationError('БИК должен содержать ровно 9 цифр.')
+        return value
+
+    def validate_checking_account(self, value: str) -> str:
+        if not value:
+            return value
+        if not value.isdigit():
+            raise serializers.ValidationError('Расчётный счёт должен содержать только цифры.')
+        if len(value) != 20:
+            raise serializers.ValidationError('Расчётный счёт должен содержать ровно 20 цифр.')
+        return value
+
+    def validate_correspondent_account(self, value: str) -> str:
+        if not value:
+            return value
+        if not value.isdigit():
+            raise serializers.ValidationError('Корреспондентский счёт должен содержать только цифры.')
+        if len(value) != 20:
+            raise serializers.ValidationError('Корреспондентский счёт должен содержать ровно 20 цифр.')
+        return value
+
+    def validate_email(self, value: str) -> str:
+        if not value:
+            return value
+        try:
+            django_validate_email(value)
+        except DjangoValidationError:
+            raise serializers.ValidationError('Введите корректный email адрес.')
+        return value

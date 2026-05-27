@@ -41,6 +41,24 @@ def set_user_first_name(sender, instance, created, **kwargs):
 
 
 
+class Requisites(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='requisites')
+    company_name = models.CharField(max_length=255, blank=True, default='')
+    legal_address = models.TextField(blank=True, default='')
+    inn = models.CharField(max_length=12, blank=True, default='')
+    ogrn = models.CharField(max_length=15, blank=True, default='')
+    bik = models.CharField(max_length=9, blank=True, default='')
+    bank_name = models.CharField(max_length=255, blank=True, default='')
+    checking_account = models.CharField(max_length=20, blank=True, default='')
+    correspondent_account = models.CharField(max_length=20, blank=True, default='')
+    phone = models.CharField(max_length=20, blank=True, default='')
+    fax = models.CharField(max_length=20, blank=True, default='')
+    email = models.CharField(max_length=254, blank=True, default='')
+
+    def __str__(self):
+        return f'Requisites({self.user})'
+
+
 class PhoneOTP(models.Model):
     phone_number = models.CharField(max_length=20)
     code = models.CharField(max_length=6)

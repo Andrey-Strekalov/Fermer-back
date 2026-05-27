@@ -7,8 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .models import User
-from .models import PhoneOTP
+from .models import User, PhoneOTP, Requisites
 
 from .serializers import ConfirmCodeSerializer
 from .serializers import RequestCodeSerializer
@@ -16,6 +15,7 @@ from .serializers import CurrentUserSerializer
 from .serializers import RefreshTokenRequestSerializer
 from .serializers import ProfileSerializer
 from .serializers import ProfileUpdateSerializer
+from .serializers import RequisitesSerializer
 
 from .constants import OTP_CODE_LENGTH, OTP_TTL_SECONDS
 
@@ -162,6 +162,34 @@ class ProfileView(APIView):
     def delete(self, request):
         request.user.delete()
         return Response({'success': True})
+
+
+class RequisitesView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        user_id = request.query_params.get('id')
+        if user_id is not None:
+            target_user = get_object_or_404(User, pk=user_id)
+            requisites = get_object_or_404(Requisites, user=target_user)
+        else:
+            requisites, _ = Requisites.objects.get_or_create(user=request.user)
+        serializer = RequisitesSerializer(requisites)
+        return Response({'success': True, 'requisites': serializer.data})
+
+    def put(self, request):
+        requisites, _ = Requisites.objects.get_or_create(user=request.user)
+        serializer = RequisitesSerializer(requisites, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'success': True, 'requisites': serializer.data})
+
+    def patch(self, request):
+        requisites, _ = Requisites.objects.get_or_create(user=request.user)
+        serializer = RequisitesSerializer(requisites, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'success': True, 'requisites': serializer.data})
 
 
 class RefreshAccessTokenView(APIView):
