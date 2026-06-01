@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.bids.models import Bid
+from apps.notifications.models import Notification
 from .models import ContactRequest
 from .serializers import ContactRequestCreateSerializer, ContactRequestSerializer
 
@@ -80,6 +81,16 @@ class ContactRequestListCreateView(APIView):
                 {'success': False, 'detail': 'Вы уже отправили запрос по этой заявке'},
                 status=status.HTTP_409_CONFLICT,
             )
+
+        Notification.objects.create(
+            recipient=contact_request.receiver,
+            type=Notification.TYPE_CONTACT_REQUEST_CREATED,
+            contact_request=contact_request,
+            payload={
+                'bid_title': contact_request.bid.title,
+                'sender_first_name': contact_request.sender.first_name,
+            },
+        )
 
         return Response(
             {'success': True, 'contact_request': ContactRequestSerializer(contact_request).data},
