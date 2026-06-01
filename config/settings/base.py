@@ -15,6 +15,7 @@ USE_TZ = True
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -22,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'channels',
     'rest_framework',
     'apps.users',
     'apps.bids',
@@ -55,6 +57,7 @@ DATABASES = {
 }
 
 WSGI_APPLICATION = 'config.wsgi.application'
+ASGI_APPLICATION = 'config.asgi.application'
 
 # Custom user model
 AUTH_USER_MODEL = 'users.User'

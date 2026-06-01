@@ -20,3 +20,11 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # CORS (разрешаем фронту)
 CORS_ALLOW_ALL_ORIGINS = True
+
+# pip install channels-redis
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [("127.0.0.1", 6379)]},
+    }
+}

@@ -1,4 +1,6 @@
 asgiref==3.6.0
+channels==4.3.2
+daphne==4.2.1
 Django==4.2.20
 django-cors-headers==4.3.1
 djangorestframework==3.14.0
