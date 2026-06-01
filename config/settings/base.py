@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.bids',
     'apps.contacts',
+    'apps.notifications',
     'corsheaders',
 ]
 
