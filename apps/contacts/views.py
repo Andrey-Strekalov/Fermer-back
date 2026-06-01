@@ -96,18 +96,18 @@ class ContactRequestListCreateView(APIView):
 
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
-            f'notifications_user_{contact_request.receiver.id}',
+            f'notifications_user_{contact_request.receiver_id}',
             {
                 'type': 'notification_created',
-                'payload': {
-                    'id': notification.id,
-                    'type': notification.type,
-                    'contact_request_id': contact_request.id,
-                    'data': {
-                        'bid_title': contact_request.bid.title,
-                        'sender_first_name': contact_request.sender.first_name,
+                'data': {
+                    'event': 'notification.created',
+                    'payload': {
+                        'id': notification.id,
+                        'type': notification.type,
+                        'contact_request_id': contact_request.id,
+                        'data': notification.payload,
+                        'created_at': notification.created_at.isoformat(),
                     },
-                    'created_at': notification.created_at.strftime('%Y-%m-%dT%H:%M:%SZ'),
                 },
             },
         )
