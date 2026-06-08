@@ -31,15 +31,22 @@ class CurrentUserSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     phone = serializers.CharField(source='phone_number', read_only=True)
     name = serializers.CharField(source='first_name', read_only=True)
-    avatar = serializers.SerializerMethodField()
+    company_logo = serializers.SerializerMethodField()
+    company_name = serializers.SerializerMethodField()
 
-    def get_avatar(self, obj):
+    def get_company_logo(self, obj):
         if not obj.company_logo:
             return None
         request = self.context.get('request')
         if request:
             return request.build_absolute_uri(obj.company_logo.url)
         return obj.company_logo.url
+
+    def get_company_name(self, obj):
+        try:
+            return obj.requisites.company_name or None
+        except Exception:
+            return None
 
 class RefreshTokenRequestSerializer(serializers.Serializer):
     refresh_token = serializers.CharField()
