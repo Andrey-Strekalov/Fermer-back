@@ -31,6 +31,15 @@ class CurrentUserSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     phone = serializers.CharField(source='phone_number', read_only=True)
     name = serializers.CharField(source='first_name', read_only=True)
+    avatar = serializers.SerializerMethodField()
+
+    def get_avatar(self, obj):
+        if not obj.company_logo:
+            return None
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(obj.company_logo.url)
+        return obj.company_logo.url
 
 class RefreshTokenRequestSerializer(serializers.Serializer):
     refresh_token = serializers.CharField()
