@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
 
-from apps.users.views import ProfileView, RequisitesView
+from apps.users.views import ProfileView, RequisitesView, PublicProfileView, PublicRequisitesView
 
 
 urlpatterns = [
@@ -32,6 +32,8 @@ urlpatterns = [
     path('api/v1/notifications/', include('apps.notifications.urls')),
     path('api/v1/profile/', ProfileView.as_view()),
     path('api/v1/profile/requisites/', RequisitesView.as_view()),
+    path('api/v1/profile/<int:user_id>/', PublicProfileView.as_view()),
+    path('api/v1/profile/<int:user_id>/requisites/', PublicRequisitesView.as_view()),
 ]
 
 if settings.DEBUG:

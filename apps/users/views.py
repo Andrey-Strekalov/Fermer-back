@@ -192,6 +192,25 @@ class RequisitesView(APIView):
         return Response({'success': True, 'requisites': serializer.data})
 
 
+class PublicProfileView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        serializer = ProfileSerializer(user, context={'request': request})
+        return Response({'success': True, 'profile': serializer.data})
+
+
+class PublicRequisitesView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        requisites = get_object_or_404(Requisites, user=user)
+        serializer = RequisitesSerializer(requisites)
+        return Response({'success': True, 'requisites': serializer.data})
+
+
 class RefreshAccessTokenView(APIView):
     authentication_classes = ()
 
