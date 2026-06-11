@@ -25,6 +25,7 @@ INSTALLED_APPS = [
 
     'channels',
     'rest_framework',
+    'drf_spectacular',
     'apps.users',
     'apps.bids',
     'apps.contacts',
@@ -70,6 +71,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'EXCEPTION_HANDLER': 'config.exception_handler.custom_exception_handler',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 
