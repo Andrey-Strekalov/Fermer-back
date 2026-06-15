@@ -14,7 +14,7 @@ Django REST API + WebSocket для B2B-платформы торговли се�
 | Daphne (ASGI-сервер) | 4.2.1 |
 | django-cors-headers | 4.9.0 |
 | drf-spectacular (OpenAPI/Swagger) | 0.27.2 |
-| PostgreSQL (прод) / SQLite (локально) | — |
+| PostgreSQL | — |
 
 ## Структура проекта
 
@@ -88,6 +88,13 @@ Django REST API + WebSocket для B2B-платформы торговли се�
 | Переменная | Описание |
 |---|---|
 | `SECRET_KEY` | Секретный ключ Django. Обязателен в продакшене. |
+| `DB_NAME` | Имя базы данных PostgreSQL. |
+| `DB_USER` | Пользователь PostgreSQL. |
+| `DB_PASSWORD` | Пароль пользователя PostgreSQL. |
+| `DB_HOST` | Хост PostgreSQL (например, `localhost`). |
+| `DB_PORT` | Порт PostgreSQL (например, `5432`). |
+| `REDIS_HOST` | Хост Redis, используется для Django Channels. |
+| `REDIS_PORT` | Порт Redis (по умолчанию `6379`). |
 
 ## API-документация
 
