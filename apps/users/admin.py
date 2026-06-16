@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import User, PhoneOTP
+from .models import User, PhoneOTP, Requisites
 
 class UserAdmin(admin.ModelAdmin):
     # Используем get_username вместо username
@@ -40,6 +40,12 @@ class PhoneOTPAdmin(admin.ModelAdmin):
     list_display = ('phone_number', 'code', 'created_at', 'is_used')
     search_fields = ('phone_number',)
     list_display_links = ('phone_number',)
+
+@admin.register(Requisites)
+class RequisitesAdmin(admin.ModelAdmin):
+    list_display = ('user', 'company_name', 'inn', 'bik')
+    search_fields = ('company_name', 'inn', 'user__phone_number')
+
 
 admin.site.register(User, UserAdmin)
 admin.site.register(PhoneOTP, PhoneOTPAdmin)

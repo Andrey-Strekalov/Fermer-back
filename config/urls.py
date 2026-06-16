@@ -19,11 +19,14 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
-from apps.users.views import ProfileView, RequisitesView
+from apps.users.views import ProfileView, RequisitesView, PublicProfileView, PublicRequisitesView
 
 
 urlpatterns = [
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('', lambda request: HttpResponse("OK"), name='health_check'),
     path('admin/', admin.site.urls),
     path('api/v1/auth/', include('apps.users.urls')),
@@ -32,6 +35,8 @@ urlpatterns = [
     path('api/v1/notifications/', include('apps.notifications.urls')),
     path('api/v1/profile/', ProfileView.as_view()),
     path('api/v1/profile/requisites/', RequisitesView.as_view()),
+    path('api/v1/profile/<int:user_id>/', PublicProfileView.as_view()),
+    path('api/v1/profile/<int:user_id>/requisites/', PublicRequisitesView.as_view()),
 ]
 
 if settings.DEBUG:

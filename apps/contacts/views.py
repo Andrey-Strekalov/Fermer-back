@@ -1,6 +1,8 @@
 from django.db import IntegrityError
 from django.db.models import Q
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -82,13 +84,31 @@ class ContactRequestListCreateView(APIView):
                 status=status.HTTP_409_CONFLICT,
             )
 
-        Notification.objects.create(
+        notification = Notification.objects.create(
             recipient=contact_request.receiver,
             type=Notification.TYPE_CONTACT_REQUEST_CREATED,
             contact_request=contact_request,
             payload={
                 'bid_title': contact_request.bid.title,
                 'sender_first_name': contact_request.sender.first_name,
+            },
+        )
+
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f'notifications_user_{contact_request.receiver_id}',
+            {
+                'type': 'notification_created',
+                'data': {
+                    'event': 'notification.created',
+                    'payload': {
+                        'id': notification.id,
+                        'type': notification.type,
+                        'contact_request_id': contact_request.id,
+                        'data': notification.payload,
+                        'created_at': notification.created_at.isoformat(),
+                    },
+                },
             },
         )
 

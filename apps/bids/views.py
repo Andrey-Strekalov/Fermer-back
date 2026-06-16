@@ -20,7 +20,7 @@ from .serializers import (
 class BidListCreateView(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     pagination_class = BidPagination
-    queryset = Bid.objects.select_related('author').all()
+    queryset = Bid.objects.select_related('author').prefetch_related('author__requisites').all()
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
