@@ -14,7 +14,8 @@
 | Daphne (ASGI-сервер) | 4.2.1 |
 | django-cors-headers | 4.9.0 |
 | drf-spectacular (OpenAPI/Swagger) | 0.27.2 |
-| PostgreSQL | — |
+| PostgreSQL | 17 |
+| Redis | 8.0.0 channels_redis 4.2.1 |
 
 ## Структура проекта
 
@@ -63,22 +64,35 @@
    ```bash
    pip install -r requirements.txt
    ```
+4. Создать базу данных PostgreSQL (имя, пользователя и пароль потом укажем в `.env`):
+```bash
+   psql -U postgres
+   CREATE DATABASE ⟨имя_базы⟩;
+```
 
-4. Скопировать `.env.example` → `.env` и заполнить значения:
+5. Запустить Redis (нужен для WebSocket-уведомлений):
+```bash
+   # Linux / macOS
+   redis-server
+   # Windows: через WSL или Docker
+   docker run -p 6379:6379 redis
+```
+
+6. Скопировать `.env.example` → `.env` и заполнить значения:
    ```bash
    cp .env.example .env
    ```
 
-5. Применить миграции:
+7. Применить миграции:
    ```bash
    python manage.py migrate
    ```
 
-6. Запустить сервер:
+8. Запустить сервер:
    ```bash
    python manage.py runserver
    ```
-
+Локально используются настройки `config/settings/local.py`. `prod.py` предназначен для продакшена, переключение в `manage.py` .
 Сервер поднимается через **Daphne** (ASGI) — WebSocket поддерживается из коробки по адресу `ws://127.0.0.1:8000/ws/notifications/?token=<access_token>`.
 
 ## Переменные окружения
@@ -95,6 +109,12 @@
 | `DB_PORT` | Порт PostgreSQL (например, `5432`). |
 | `REDIS_HOST` | Хост Redis, используется для Django Channels. |
 | `REDIS_PORT` | Порт Redis (по умолчанию `6379`). |
+
+## Вход (OTP)
+
+1. `POST /api/v1/auth/request-code/` с телефоном → сервер создаёт одноразовый код.
+2. Локально код виден в окне регистрации. SMS не отправляется.
+3. `POST /api/v1/auth/confirm-code/` с телефоном и кодом → в ответе access и refresh токены.
 
 ## API-документация
 
