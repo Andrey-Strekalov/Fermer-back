@@ -15,7 +15,7 @@
 | django-cors-headers | 4.9.0 |
 | drf-spectacular (OpenAPI/Swagger) | 0.27.2 |
 | PostgreSQL | 17 |
-| Redis | 8.0.0 channels_redis 4.2.1 |
+| Redis | 8.0.0 только для продакшена: channels_redis 4.2.1 |
 
 ## Структура проекта
 
@@ -71,12 +71,10 @@
 ```
 
 5. Запустить Redis (нужен для WebSocket-уведомлений):
-```bash
-   # Linux / macOS
-   redis-server
-   # Windows: через WSL или Docker
-   docker run -p 6379:6379 redis
-```
+
+> Локально Redis не нужен: в `config/settings/local.py` используется `InMemoryChannelLayer`.
+> Redis требуется только в продакшене (`config/settings/prod.py`) для работы WebSocket-уведомлений
+> с несколькими процессами.
 
 6. Скопировать `.env.example` → `.env` и заполнить значения:
    ```bash
@@ -107,8 +105,8 @@
 | `DB_PASSWORD` | Пароль пользователя PostgreSQL. |
 | `DB_HOST` | Хост PostgreSQL (например, `localhost`). |
 | `DB_PORT` | Порт PostgreSQL (например, `5432`). |
-| `REDIS_HOST` | Хост Redis, используется для Django Channels. |
-| `REDIS_PORT` | Порт Redis (по умолчанию `6379`). |
+| `REDIS_HOST` | Хост Redis, используется для Django Channels. только prod|
+| `REDIS_PORT` | Порт Redis (по умолчанию `6379`). только prod|
 
 ## Вход (OTP)
 
