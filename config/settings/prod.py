@@ -1,22 +1,18 @@
 from .base import *
+import os
 
 DEBUG = False
-
-# ALLOWED_HOSTS = [
-#     'localhost',
-#     '127.0.0.1',
-#     'тонна-снг.рф',
-#     'xn----7sbk1bacc2ad.xn--p1ai'
-# ]
-
-# Render использует proxy
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Static files
 # STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# CORS (разрешаем фронту)
-# CORS_ALLOW_ALL_ORIGINS = True
+# CORS — только явный whitelist в продакшне
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
+    if origin.strip()
+]
 
 # pip install channels-redis
 # CHANNEL_LAYERS = {
