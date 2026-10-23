@@ -237,6 +237,11 @@ class RefreshAccessTokenView(APIView):
 
             User.objects.get(pk=user_id)
             access_token = str(refresh.access_token)
+
+            refresh.blacklist()
+            refresh.set_jti()
+            refresh.set_exp()
+            new_refresh_token = str(refresh)
         except Exception:
             return self.invalid_refresh_response()
 
@@ -244,6 +249,28 @@ class RefreshAccessTokenView(APIView):
             {
                 "success": True,
                 "access_token": access_token,
+                "refresh_token": new_refresh_token,
             },
             status=status.HTTP_200_OK
         )
+
+
+class LogoutView(APIView):
+    authentication_classes = ()
+
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+        if not refresh_token:
+            return Response(
+                {"success": False, "detail": "Токен недействителен или уже отозван"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        except Exception:
+            return Response(
+                {"success": False, "detail": "Токен недействителен или уже отозван"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        return Response({"success": True}, status=status.HTTP_200_OK)

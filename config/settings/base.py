@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +28,7 @@ INSTALLED_APPS = [
 
     'channels',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'drf_spectacular',
     'apps.users',
     'apps.bids',
@@ -36,7 +38,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -45,7 +46,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
 ]
 
 
@@ -77,6 +77,13 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+}
 
 STATIC_URL = '/static/'
 STATIC_ROOT = "static/"
@@ -87,7 +94,7 @@ MEDIA_ROOT = BASE_DIR.parent / 'media'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # папка под шаблоны (может не существовать)
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -98,8 +105,6 @@ TEMPLATES = [
             ],
         },
     },
-
-
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
