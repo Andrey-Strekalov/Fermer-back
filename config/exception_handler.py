@@ -1,6 +1,8 @@
 from django.http import Http404
 from rest_framework.views import exception_handler as drf_exception_handler
-from rest_framework.exceptions import NotAuthenticated, AuthenticationFailed, PermissionDenied, NotFound
+from rest_framework.exceptions import (
+    NotAuthenticated, AuthenticationFailed, PermissionDenied, NotFound,
+)
 
 
 def custom_exception_handler(exc, context):

@@ -1,6 +1,8 @@
 from django.urls import path
-from . import views
-from .views import RequestCodeView, ConfirmCodeView, CurrentUserView, RefreshAccessTokenView, LogoutView
+from .views import (
+    RequestCodeView, ConfirmCodeView, CurrentUserView,
+    RefreshAccessTokenView, LogoutView,
+)
 
 urlpatterns = [
     path('request-code/', RequestCodeView.as_view()),

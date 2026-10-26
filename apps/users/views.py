@@ -22,7 +22,6 @@ from .constants import OTP_CODE_LENGTH, OTP_TTL_SECONDS
 from datetime import timedelta
 from django.utils import timezone
 
-from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 
 
@@ -146,7 +145,10 @@ class ProfileView(APIView):
     def patch(self, request):
         if 'phone_number' in request.data:
             return Response(
-                {'success': False, 'detail': 'Изменение номера телефона недоступно через этот endpoint'},
+                {
+                    'success': False,
+                    'detail': 'Изменение номера телефона недоступно через этот endpoint',
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -155,9 +157,10 @@ class ProfileView(APIView):
         serializer.save()
 
         request.user.refresh_from_db()
-        return Response(
-            {'success': True, 'profile': ProfileSerializer(request.user, context={'request': request}).data},
-        )
+        return Response({
+            'success': True,
+            'profile': ProfileSerializer(request.user, context={'request': request}).data,
+        })
 
     def delete(self, request):
         request.user.delete()

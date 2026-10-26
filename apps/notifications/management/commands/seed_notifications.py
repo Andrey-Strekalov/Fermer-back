@@ -35,7 +35,9 @@ class Command(BaseCommand):
             user = User.objects.first()
             if not user:
                 raise CommandError('В БД нет ни одного пользователя')
-            self.stdout.write(f'--phone не указан, используется первый пользователь: {user.phone_number}')
+            self.stdout.write(
+                f'--phone не указан, используется первый пользователь: {user.phone_number}'
+            )
 
         notifications = [
             Notification(
