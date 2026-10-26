@@ -1,7 +1,8 @@
 openapi: 3.0.3
 info:
-  title: ''
-  version: 0.0.0
+  title: Тонна API
+  version: 1.0.0
+  description: B2B-маркетплейс сельхозпродукции
 paths:
   /api/schema/:
     get:
@@ -156,6 +157,16 @@ paths:
       - api
       security:
       - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/logout/:
+    post:
+      operationId: api_v1_auth_logout_create
+      tags:
+      - api
+      security:
       - {}
       responses:
         '200':
