@@ -33,4 +33,3 @@ class Bid(models.Model):
 
     def __str__(self) -> str:
         return f'Bid#{self.pk} {self.type} {self.title}'
-

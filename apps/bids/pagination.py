@@ -15,4 +15,3 @@ class BidPagination(PageNumberPagination):
                 'total': self.page.paginator.count,
             }
         )
-

@@ -14,4 +14,3 @@ urlpatterns = [
     path('<int:pk>/unarchive/', BidUnarchiveView.as_view()),
     path('<int:pk>/', BidUpdateView.as_view()),
 ]
-

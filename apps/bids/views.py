@@ -40,7 +40,9 @@ class BidListCreateView(ListCreateAPIView):
                 Q(is_archived=False) | Q(is_archived=True, author=self.request.user)
             )
         else:
-            raise ValidationError({'status': 'Некорректный статус. Допустимые значения: active, archived, all'})
+            raise ValidationError(
+                {'status': 'Некорректный статус. Допустимые значения: active, archived, all'}
+            )
 
         bid_type = self.request.query_params.get('type')
         if bid_type is not None:
@@ -233,4 +235,3 @@ class BidUnarchiveView(APIView):
             {'success': True, 'bid': BidSerializer(bid).data},
             status=status.HTTP_200_OK,
         )
-

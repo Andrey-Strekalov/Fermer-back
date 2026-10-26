@@ -1,4 +1,4 @@
-from .base import *
+from .base import *  # noqa: F401,F403
 import os
 
 DEBUG = False
@@ -14,10 +14,11 @@ CORS_ALLOWED_ORIGINS = [
     if origin.strip()
 ]
 
-# pip install channels-redis
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {"hosts": [(os.getenv('REDIS_HOST', '127.0.0.1'), int(os.getenv('REDIS_PORT', '6379')))]},
-#     }
-# }
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.getenv("REDIS_URL", "redis://localhost:6379/0")],
+        },
+    }
+}

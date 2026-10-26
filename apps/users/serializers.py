@@ -3,10 +3,11 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 from .models import User, Requisites
 
+
 class RequestCodeSerializer(serializers.Serializer):
     phone = serializers.CharField()
 
-    def validate_phone(self, value: str)-> str:
+    def validate_phone(self, value: str) -> str:
         value = value.strip()
 
         if not value.startswith('+'):
@@ -17,15 +18,17 @@ class RequestCodeSerializer(serializers.Serializer):
 
         return value
 
+
 class ConfirmCodeSerializer(serializers.Serializer):
     phone = serializers.CharField()
     code = serializers.CharField()
 
     def validate(self, attrs):
-        attrs['phone']= attrs['phone'].strip()
+        attrs['phone'] = attrs['phone'].strip()
         attrs['code'] = attrs['code'].strip()
 
         return attrs
+
 
 class CurrentUserSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
@@ -48,6 +51,7 @@ class CurrentUserSerializer(serializers.Serializer):
         except Exception:
             return None
 
+
 class RefreshTokenRequestSerializer(serializers.Serializer):
     refresh_token = serializers.CharField()
 
@@ -61,7 +65,10 @@ class RefreshTokenRequestSerializer(serializers.Serializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'phone_number', 'first_name', 'last_name', 'role', 'company_logo', 'date_joined')
+        fields = (
+            'id', 'phone_number', 'first_name', 'last_name', 'role',
+            'company_logo', 'date_joined',
+        )
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
@@ -106,7 +113,9 @@ class RequisitesSerializer(serializers.ModelSerializer):
         if not value.isdigit():
             raise serializers.ValidationError('ИНН должен содержать только цифры.')
         if len(value) not in (10, 12):
-            raise serializers.ValidationError('ИНН должен содержать 10 цифр (юрлицо) или 12 цифр (ИП).')
+            raise serializers.ValidationError(
+                'ИНН должен содержать 10 цифр (юрлицо) или 12 цифр (ИП).'
+            )
         return value
 
     def validate_ogrn(self, value: str) -> str:
@@ -115,7 +124,9 @@ class RequisitesSerializer(serializers.ModelSerializer):
         if not value.isdigit():
             raise serializers.ValidationError('ОГРН должен содержать только цифры.')
         if len(value) not in (13, 15):
-            raise serializers.ValidationError('ОГРН должен содержать 13 цифр (юрлицо) или 15 цифр (ИП).')
+            raise serializers.ValidationError(
+                'ОГРН должен содержать 13 цифр (юрлицо) или 15 цифр (ИП).'
+            )
         return value
 
     def validate_bik(self, value: str) -> str:
@@ -140,9 +151,13 @@ class RequisitesSerializer(serializers.ModelSerializer):
         if not value:
             return value
         if not value.isdigit():
-            raise serializers.ValidationError('Корреспондентский счёт должен содержать только цифры.')
+            raise serializers.ValidationError(
+                'Корреспондентский счёт должен содержать только цифры.'
+            )
         if len(value) != 20:
-            raise serializers.ValidationError('Корреспондентский счёт должен содержать ровно 20 цифр.')
+            raise serializers.ValidationError(
+                'Корреспондентский счёт должен содержать ровно 20 цифр.'
+            )
         return value
 
     def validate_email(self, value: str) -> str:

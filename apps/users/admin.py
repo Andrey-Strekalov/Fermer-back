@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import User, PhoneOTP, Requisites
 
+
 class UserAdmin(admin.ModelAdmin):
     # Используем get_username вместо username
     list_display = ['get_username', 'phone_number', 'role', 'is_staff']
@@ -23,7 +24,9 @@ class UserAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('phone_number', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'role')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Permissions', {
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+        }),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
 
@@ -41,6 +44,7 @@ class PhoneOTPAdmin(admin.ModelAdmin):
     search_fields = ('phone_number',)
     list_display_links = ('phone_number',)
 
+
 @admin.register(Requisites)
 class RequisitesAdmin(admin.ModelAdmin):
     list_display = ('user', 'company_name', 'inn', 'bik')
@@ -49,4 +53,3 @@ class RequisitesAdmin(admin.ModelAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(PhoneOTP, PhoneOTPAdmin)
-

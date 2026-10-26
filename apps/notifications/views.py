@@ -46,7 +46,10 @@ class NotificationReadView(APIView):
             notification.is_read = True
             notification.save(update_fields=['is_read'])
 
-        return Response({'success': True, 'notification': NotificationSerializer(notification).data})
+        return Response({
+            'success': True,
+            'notification': NotificationSerializer(notification).data,
+        })
 
 
 class NotificationReadAllView(APIView):

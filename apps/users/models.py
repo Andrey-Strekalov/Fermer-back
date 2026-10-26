@@ -40,7 +40,6 @@ def set_user_first_name(sender, instance, created, **kwargs):
         instance.save(update_fields=['first_name'])
 
 
-
 class Requisites(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='requisites')
     company_name = models.CharField(max_length=255, blank=True, default='')

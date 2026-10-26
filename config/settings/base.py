@@ -108,3 +108,9 @@ TEMPLATES = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Тонна API",
+    "DESCRIPTION": "B2B-маркетплейс сельхозпродукции",
+    "VERSION": "1.0.0",
+}
